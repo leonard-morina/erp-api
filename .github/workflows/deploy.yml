@@ -1,4 +1,4 @@
-name: Deploy Djawn API on dev server
+name: Deploy Erp API on dev server
 
 on:
   push:
