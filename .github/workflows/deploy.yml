@@ -1,0 +1,57 @@
+name: Deploy Djawn API on dev server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  buildNdeploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0'
+    - name: branch uat
+      if: github.ref == 'refs/heads/uat'
+      run: |
+        echo "branch is: ${GITHUB_REF}"
+    - name: Build
+      run: | 
+          cd src/Erp.Api/
+          dotnet publish -c Release
+          cd bin/Release/net6.0/publish
+    - name: Public IP
+      id: ip
+      uses: haythem/public-ip@v1.2
+    - name: Add public IP to AWS security group
+      uses: sohelamin/aws-security-group-add-ip-action@master
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: 'us-east-2'
+        aws-security-group-id: 'sg-0bee7ccc3692ce44e'
+        port: '22'
+        description: 'Deployment IP'
+    - name: Deploy to instance
+      uses: easingthemes/ssh-deploy@v2.1.5
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        SOURCE: "src/Erp.Api/bin/Release/net6.0/publish/"
+        REMOTE_HOST: ${{ secrets.SERVER }}
+        REMOTE_USER: ${{ secrets.USERNAME }}
+        TARGET: "/home/ec2-user/erp-api/"
+    - name: restarting service
+      uses: appleboy/ssh-action@master
+      with:
+         host: ${{ secrets.SERVER }}
+         username: ${{ secrets.USERNAME }}
+         key: ${{ secrets.PRIVATE_KEY }}
+         port: 22
+         script: |
+          sudo systemctl restart erp-api.service
+          sleep 5
+          sudo systemctl status erp-api.service
