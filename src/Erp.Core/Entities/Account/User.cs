@@ -9,4 +9,6 @@ public class User : IdentityUser<string>, IEntity
     public string LastName { get; set; }
     public DateTime InsertedDateTime { get; set; }
     public DateTime? ModifiedDateTime { get; set; }
+    public bool IsActive { get; set; }
+    public DateTime? InactiveDateTime { get; set; } 
 }

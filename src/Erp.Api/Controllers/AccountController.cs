@@ -30,7 +30,7 @@ public class AccountController : BaseController
     
     [HttpPost("login")]
     [AllowAnonymous]
-    public async Task<IActionResult> Login([FromBody] SignIn login, CancellationToken cancellationToken)
+    public async Task<IActionResult> Login([FromBody] SignIn login, CancellationToken cancellationToken = default)
     {
         var loginResult =
             await _signInManager.PasswordSignInAsync(login.Username, login.Password, false, false);
@@ -42,6 +42,25 @@ public class AccountController : BaseController
         return Ok(new SucceededAuthentication {User = user, Token = token});
     }
 
+    [HttpPost("username/valid")]
+    public async Task<IActionResult> IsUsernameValid([FromBody] ValidUsername validUsername,
+        CancellationToken cancellationToken = default)
+    {
+        var validatedUsername = new ValidatedUsername();
+        var user = await _userManager.FindByNameAsync(validUsername.Username);
+        if (user == null)
+        {
+            validatedUsername.UsernameExists = false;
+        }
+        else
+        {
+            validatedUsername.UsernameExists = true;
+            validatedUsername.UsernameIsActive = user.IsActive;
+        }
+
+        return Ok(validatedUsername);
+    }
+    
     [HttpPost("register")]
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterUser registerUser)
