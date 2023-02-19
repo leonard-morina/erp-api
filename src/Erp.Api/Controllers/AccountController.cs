@@ -58,7 +58,7 @@ public class AccountController : BaseController
         user ??= await _userManager.FindByNameAsync(username);
         var roles = await _userManager.GetRolesAsync(user);
         var token = _tokenGenerator.GenerateToken(user.UserName, roles[0]);
-        return Ok(new SucceededAuthentication {User = user, Token = token});
+        return Ok(new SucceededAuthentication(user) { Token = token});
     }
 
     [HttpPost("username-or-email/valid")]
@@ -120,6 +120,6 @@ public class AccountController : BaseController
 
         var roles = await _userManager.GetRolesAsync(user);
         var token = _tokenGenerator.GenerateToken(user.UserName, roles[0]);
-        return Ok(new SucceededAuthentication {User = user, Token = token});
+        return Ok(new SucceededAuthentication(user) {Token = token});
     }
 }
