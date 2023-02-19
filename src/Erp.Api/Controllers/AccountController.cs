@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Erp.Api.Authentication;
 using Erp.Api.Models;
 using Erp.Api.ViewModel;
@@ -32,35 +33,63 @@ public class AccountController : BaseController
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] SignIn login, CancellationToken cancellationToken = default)
     {
+        var isEmail = new EmailAddressAttribute().IsValid(login.UsernameOrEmail);
+        string username;
+        User? user = null;
+        if (isEmail)
+        {
+            user = await _userManager.FindByEmailAsync(login.UsernameOrEmail);
+            if (user == null)
+                return BadRequest(new ValidatedUsernameOrEmail
+                {
+                    UsernameOrEmailExists = false,
+                });
+            username = user.UserName;
+        }
+        else
+        {
+            username = login.UsernameOrEmail;
+        }
+
         var loginResult =
-            await _signInManager.PasswordSignInAsync(login.Username, login.Password, false, false);
+            await _signInManager.PasswordSignInAsync(username, login.Password, false, false);
 
         if (!loginResult.Succeeded) return Unauthorized(loginResult);
-        var user = await _userManager.FindByNameAsync(login.Username);
+        user ??= await _userManager.FindByNameAsync(username);
         var roles = await _userManager.GetRolesAsync(user);
         var token = _tokenGenerator.GenerateToken(user.UserName, roles[0]);
         return Ok(new SucceededAuthentication {User = user, Token = token});
     }
 
-    [HttpPost("username/valid")]
-    public async Task<IActionResult> IsUsernameValid([FromBody] ValidUsername validUsername,
+    [HttpPost("username-or-email/valid")]
+    public async Task<IActionResult> IsUsernameValid([FromBody] ValidUsernameOrEmail validUsernameOrEmail,
         CancellationToken cancellationToken = default)
     {
-        var validatedUsername = new ValidatedUsername();
-        var user = await _userManager.FindByNameAsync(validUsername.Username);
-        if (user == null)
+        var validatedUsernameOrEmail = new ValidatedUsernameOrEmail();
+        var isEmail = new EmailAddressAttribute().IsValid(validUsernameOrEmail.Value);
+        User? user = null;
+        if (isEmail)
         {
-            validatedUsername.UsernameExists = false;
+            user = await _userManager.FindByEmailAsync(validUsernameOrEmail.Value);
         }
         else
         {
-            validatedUsername.UsernameExists = true;
-            validatedUsername.UsernameIsActive = user.IsActive;
+            user = await _userManager.FindByNameAsync(validUsernameOrEmail.Value);
         }
 
-        return Ok(validatedUsername);
+        if (user == null)
+        {
+            validatedUsernameOrEmail.UsernameOrEmailExists = false;
+        }
+        else
+        {
+            validatedUsernameOrEmail.UsernameOrEmailExists = true;
+            validatedUsernameOrEmail.UsernameOrEmailIsActive = user.IsActive;
+        }
+
+        return Ok(validatedUsernameOrEmail);
     }
-    
+
     [HttpPost("register")]
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterUser registerUser)
