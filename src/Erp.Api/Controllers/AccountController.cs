@@ -103,6 +103,7 @@ public class AccountController : BaseController
             LastName = registerUser.LastName,
             InsertedDateTime = DateTime.Now,
             EmailConfirmed = true,
+            IsActive = true
         };
 
         var result = await _userManager.CreateAsync(user, registerUser.Password);
