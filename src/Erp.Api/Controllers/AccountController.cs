@@ -3,6 +3,7 @@ using Erp.Api.Authentication;
 using Erp.Api.Models;
 using Erp.Api.ViewModel;
 using Erp.Core.Entities.Account;
+using Erp.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +19,19 @@ public class AccountController : BaseController
     private readonly RoleManager<Role> _roleManager;
     
     private readonly ITokenGenerator _tokenGenerator;
+    private readonly ICompanyService _companyService;
 
     public AccountController(SignInManager<User> signInManager, UserManager<User> userManager,
-        RoleManager<Role> roleManager, ITokenGenerator tokenGenerator) : base(signInManager)
+        RoleManager<Role> roleManager, ITokenGenerator tokenGenerator, ICompanyService companyService) : base(
+        signInManager)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _roleManager = roleManager;
         _tokenGenerator = tokenGenerator;
+        _companyService = companyService;
     }
-    
-    
+
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] SignIn login, CancellationToken cancellationToken = default)
@@ -88,6 +91,15 @@ public class AccountController : BaseController
         }
 
         return Ok(validatedUsernameOrEmail);
+    }
+
+    [HttpGet("user/companies")]
+    [JwtAuthorize]
+    public async Task<IActionResult> GetAuthenticatedUsersCompany(CancellationToken cancellationToken = default)
+    {
+        var user = await GetAuthenticatedUserAsync();
+        if (user == null) return StatusCode(401);
+        return Ok(await _companyService.GetUserCompaniesByUserIdAsync(user.Id, cancellationToken));
     }
 
     [HttpPost("register")]

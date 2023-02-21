@@ -1,5 +1,6 @@
 
 using Erp.Core.Interfaces;
+using Erp.Core.Services;
 using Erp.Infrastructure.Data;
 using Erp.Infrastructure.Logging;
 
@@ -11,6 +12,8 @@ public static class CoreServicesConfiguration
     {
         services.AddScoped(typeof(IAsyncRepository<>), typeof(ErpRepository<>));
         services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
+
+        services.AddScoped<ICompanyService, CompanyService>();
         return services;
     }
 }

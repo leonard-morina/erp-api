@@ -23,7 +23,6 @@ public class ErpContext : IdentityDbContext<User, Role, string>
 
     private void ConfigureModelBuilders(ModelBuilder builder)
     {
-
         builder.ConvertIdentityToPostgresSQLNamingConventions();
         builder.Entity<Company>(entity =>
         {
@@ -33,8 +32,13 @@ public class ErpContext : IdentityDbContext<User, Role, string>
         {
             entity.ToTable("user_company");
         });
+        builder.Entity<CompanyJoinRequest>(entity =>
+        {
+            entity.ToTable("company_join_request");
+        });
     }
 
     public DbSet<Company> Companies { get; set; }
     public DbSet<UserCompany> UserCompanies { get; set; }
+    public DbSet<CompanyJoinRequest> CompanyJoinRequests { get; set; }
 }
