@@ -14,14 +14,18 @@ public class Company : IEntity, IAuditableEntity
 
     [Key]
     public string CompanyId { get; set; }
-    public string CompanyName { get; set; }
-    public string CompanyAddress { get; set; }
-    public string CompanyOwnerFirstName { get; set; }
-    public string CompanyOwnerLastName { get; set; }
-    public string CompanyLogo { get; set; }
-    public string CompanyEmail { get; set; }
-    public string CompanyWebsite { get; set; }
-    public string CompanyPhone { get; set; }
+    public string Name { get; set; }
+    public string AddressLine1 { get; set; }
+    public string AddressLine2 { get; set; }
+    public string Initials { get; set; }
+    public string OwnerFirstName { get; set; }
+    public string OwnerLastName { get; set; }
+    public string Logo { get; set; }
+    public string Email { get; set; }
+    public string Website { get; set; }
+    public string Phone { get; set; }
+    public string Country { get; set; }
+    public string City { get; set; }
     public DateTime InsertedDateTime { get; set; }
     public DateTime? ModifiedDateTime { get; set; }
     public string InsertedByUserId { get; set; }

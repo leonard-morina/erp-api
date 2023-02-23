@@ -19,17 +19,14 @@ public class AccountController : BaseController
     private readonly RoleManager<Role> _roleManager;
     
     private readonly ITokenGenerator _tokenGenerator;
-    private readonly ICompanyService _companyService;
 
     public AccountController(SignInManager<User> signInManager, UserManager<User> userManager,
-        RoleManager<Role> roleManager, ITokenGenerator tokenGenerator, ICompanyService companyService) : base(
-        signInManager)
+        RoleManager<Role> roleManager, ITokenGenerator tokenGenerator) : base(signInManager)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _roleManager = roleManager;
         _tokenGenerator = tokenGenerator;
-        _companyService = companyService;
     }
 
     [HttpPost("login")]
@@ -93,15 +90,6 @@ public class AccountController : BaseController
         return Ok(validatedUsernameOrEmail);
     }
 
-    [HttpGet("user/companies")]
-    [JwtAuthorize]
-    public async Task<IActionResult> GetAuthenticatedUsersCompany(CancellationToken cancellationToken = default)
-    {
-        var user = await GetAuthenticatedUserAsync();
-        if (user == null) return StatusCode(401);
-        return Ok(await _companyService.GetUserCompaniesByUserIdAsync(user.Id, cancellationToken));
-    }
-
     [HttpPost("register")]
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterUser registerUser)
@@ -128,6 +116,7 @@ public class AccountController : BaseController
             {
                 await _roleManager.CreateAsync(new Role(registerUser.Role));
             }
+
             await _userManager.AddToRoleAsync(user, registerUser.Role);
         }
 

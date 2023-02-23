@@ -27,23 +27,24 @@ public class CompanyService : ICompanyService
         return await _userCompanyRepository.ListAsync(userCompaniesSpecification, cancellationToken);
     }
 
-    public async Task<bool> AddCompanyAsync(string companyName, string companyAddress, string companyEmail,
-        string companyPhone, string companyWebsite,
+    public async Task<bool> AddCompanyAsync(string companyName, string companyAddress1, string companyAddress2,
+        string companyEmail, string companyPhone, string companyWebsite,
         string companyLogo, string companyOwnerFirstName, string companyOwnerLastName,
         string ownerId, bool addOwnerAsPartOfCompany,
         CancellationToken cancellationToken = default)
     {
         var company = new Company
         {
-            CompanyName = companyName,
-            CompanyAddress = companyAddress,
-            CompanyEmail = companyEmail,
-            CompanyLogo = companyLogo,
-            CompanyPhone = companyPhone,
+            Name = companyName,
+            AddressLine1 = companyAddress1,
+            AddressLine2 = companyAddress2,
+            Email = companyEmail,
+            Logo = companyLogo,
+            Phone = companyPhone,
             InsertedByUserId = ownerId,
-            CompanyOwnerFirstName = companyOwnerFirstName,
-            CompanyOwnerLastName = companyOwnerLastName,
-            CompanyWebsite = companyWebsite,
+            OwnerFirstName = companyOwnerFirstName,
+            OwnerLastName = companyOwnerLastName,
+            Website = companyWebsite,
         };
 
         var addedCompany = await _companyRepository.AddAsync(company, cancellationToken);

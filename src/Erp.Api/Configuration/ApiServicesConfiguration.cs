@@ -1,5 +1,6 @@
 using Erp.Api.Authentication;
 using Erp.Api.Constants;
+using Erp.Api.Files;
 using Microsoft.OpenApi.Models;
 
 namespace Erp.Api.Configuration;
@@ -11,6 +12,11 @@ public static class ApiServicesConfiguration
         var tokenConfiguration =
             configuration.GetSection(ConfigurationConstants.TOKEN).Get<TokenConfiguration>();
         services.AddSingleton<ITokenGenerator>(serviceProvider => new JwtTokenGenerator(tokenConfiguration));
+
+        var s3BucketConfiguration =
+            configuration.GetSection(ConfigurationConstants.S3_BUCKET).Get<S3BucketConfiguration>();
+        services.AddSingleton<IFileUploader>(serviceProvider => new AwsS3Service(s3BucketConfiguration));
+        services.AddSingleton(serviceProvider => s3BucketConfiguration.Folders);
         
         services.AddLogging(loggingBuilder =>
         {
