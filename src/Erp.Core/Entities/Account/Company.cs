@@ -16,13 +16,13 @@ public class Company : IEntity, IAuditableEntity
     public string CompanyId { get; set; }
     public string Name { get; set; }
     public string AddressLine1 { get; set; }
-    public string AddressLine2 { get; set; }
-    public string Initials { get; set; }
+    public string? AddressLine2 { get; set; }
+    public string? Initials { get; set; }
     public string OwnerFirstName { get; set; }
     public string OwnerLastName { get; set; }
-    public string Logo { get; set; }
+    public string? Logo { get; set; }
     public string Email { get; set; }
-    public string Website { get; set; }
+    public string? Website { get; set; }
     public string Phone { get; set; }
     public string Country { get; set; }
     public string City { get; set; }
