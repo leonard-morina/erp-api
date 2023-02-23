@@ -3,7 +3,6 @@ using Erp.Api.Authentication;
 using Erp.Api.Models;
 using Erp.Api.ViewModel;
 using Erp.Core.Entities.Account;
-using Erp.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -57,7 +56,7 @@ public class AccountController : BaseController
         if (!loginResult.Succeeded) return Unauthorized(loginResult);
         user ??= await _userManager.FindByNameAsync(username);
         var roles = await _userManager.GetRolesAsync(user);
-        var token = _tokenGenerator.GenerateToken(user.UserName, roles[0]);
+        var token = _tokenGenerator.GenerateToken(user.Email, roles[0]);
         return Ok(new SucceededAuthentication(user) { Token = token});
     }
 
@@ -121,7 +120,7 @@ public class AccountController : BaseController
         }
 
         var roles = await _userManager.GetRolesAsync(user);
-        var token = _tokenGenerator.GenerateToken(user.UserName, roles[0]);
+        var token = _tokenGenerator.GenerateToken(user.Email, roles[0]);
         return Ok(new SucceededAuthentication(user) {Token = token});
     }
 }
