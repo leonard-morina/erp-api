@@ -30,7 +30,7 @@ public class CompanyService : ICompanyService
     public async Task<bool> AddCompanyAsync(string companyName, string companyAddress1, string companyAddress2,
         string companyEmail, string companyPhone, string companyWebsite,
         string companyLogo, string companyOwnerFirstName, string companyOwnerLastName,
-        string ownerId, bool addOwnerAsPartOfCompany,
+        string country, string city, string ownerId, bool addOwnerAsPartOfCompany, 
         CancellationToken cancellationToken = default)
     {
         var company = new Company
@@ -45,6 +45,8 @@ public class CompanyService : ICompanyService
             OwnerFirstName = companyOwnerFirstName,
             OwnerLastName = companyOwnerLastName,
             Website = companyWebsite,
+            City = city,
+            Country = country
         };
 
         var addedCompany = await _companyRepository.AddAsync(company, cancellationToken);

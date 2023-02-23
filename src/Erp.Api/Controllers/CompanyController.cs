@@ -59,6 +59,7 @@ public class CompanyController : BaseController
             companyRegister.AddressLine1, companyRegister.AddressLine2,
             companyRegister.Email, companyRegister.PhoneNumber, companyRegister.Website, logoFileName,
             companyRegister.OwnerFirstName, companyRegister.OwnerLastName,
+            companyRegister.Country, companyRegister.City,
             user.Id, true, cancellationToken);
 
         if (!registeredCompany) return BadRequest("Failed to register company");
