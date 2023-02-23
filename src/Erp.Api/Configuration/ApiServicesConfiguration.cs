@@ -11,6 +11,9 @@ public static class ApiServicesConfiguration
     {
         var tokenConfiguration =
             configuration.GetSection(ConfigurationConstants.TOKEN).Get<TokenConfiguration>();
+        services.Configure<TokenConfiguration>(configuration.GetSection(ConfigurationConstants.TOKEN));
+
+        services.AddSingleton(services => tokenConfiguration);
         services.AddSingleton<ITokenGenerator>(serviceProvider => new JwtTokenGenerator(tokenConfiguration));
 
         var s3BucketConfiguration =
