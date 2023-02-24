@@ -2,6 +2,7 @@ using Erp.Api.Authentication;
 using Erp.Api.Configuration;
 using Erp.Api.Files;
 using Erp.Api.Models;
+using Erp.Api.ViewModel;
 using Erp.Core.Entities.Account;
 using Erp.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -31,7 +32,17 @@ public class CompanyController : BaseController
     {
         var user = await GetAuthenticatedUserAsync();
         if (user == null) return StatusCode(401);
-        return Ok(await _companyService.GetUserCompaniesByUserIdAsync(user.Id, cancellationToken));
+        var companies = await _companyService.GetUserCompaniesByUserIdAsync(user.Id, cancellationToken);
+        var companyWithLogoUrl = companies.Select(userCompany => new CompanyWithLogoUrl
+        {
+            CompanyName = userCompany.Company.Name,
+            CompanyOwnerFirstName = userCompany.Company.OwnerFirstName,
+            CompanyOwnerLastName = userCompany.Company.OwnerLastName,
+            CompanyId = userCompany.CompanyId,
+            IsOwner = userCompany.IsOwner,
+            CompanyLogoUrl = _fileUploader.GetFileUrl(userCompany.Company.Logo, _foldersConfiguration.CompanyLogo)
+        }).ToList();
+        return Ok(companyWithLogoUrl);
     }
 
     [HttpPost("create")]
