@@ -1,5 +1,7 @@
 using Erp.Api.Authentication;
+using Erp.Api.Cache;
 using Erp.Api.Configuration;
+using Erp.Api.Constants;
 using Erp.Api.Files;
 using Erp.Api.Models;
 using Erp.Api.ViewModel;
@@ -26,8 +28,10 @@ public class CompanyController : BaseController
         _foldersConfiguration = foldersConfiguration;
     }
 
-    [HttpGet("list/my")]
+
+    [HttpGet(ApiRoutes.Company.MY_LIST)]
     [JwtAuthorize]
+    [Cached(TimeConstants.WEEK_IN_SECONDS, true)]
     public async Task<IActionResult> GetAuthenticatedUsersCompany(CancellationToken cancellationToken = default)
     {
         var user = await GetAuthenticatedUserAsync();
@@ -45,8 +49,9 @@ public class CompanyController : BaseController
         return Ok(companyWithLogoUrl);
     }
 
-    [HttpPost("create")]
+    [HttpPost(ApiRoutes.Company.CREATE)]
     [JwtAuthorize]
+    [RemoveCacheKeysOnSuccess(ApiRoutes.Company.MY_LIST)]
     public async Task<IActionResult> CreateCompany([FromForm] RegisterCompany companyRegister,
         CancellationToken cancellationToken = default)
     {

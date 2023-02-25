@@ -1,4 +1,5 @@
 using Erp.Api.Authentication;
+using Erp.Api.Cache;
 using Erp.Api.Constants;
 using Erp.Api.Files;
 using Microsoft.OpenApi.Models;
@@ -20,12 +21,24 @@ public static class ApiServicesConfiguration
             configuration.GetSection(ConfigurationConstants.S3_BUCKET).Get<S3BucketConfiguration>();
         services.AddSingleton<IFileUploader>(serviceProvider => new AwsS3Service(s3BucketConfiguration));
         services.AddSingleton(serviceProvider => s3BucketConfiguration.Folders);
-        
+
         services.AddLogging(loggingBuilder =>
         {
             loggingBuilder.ClearProviders();
-            loggingBuilder.AddConfiguration(configuration.GetSection("Logging"));
+            loggingBuilder.AddConfiguration(configuration.GetSection(ConfigurationConstants.LOGGING));
         });
+
+        var redisConfiguration = configuration.GetSection(ConfigurationConstants.REDIS_CACHE)
+            .Get<RedisCacheConfiguration>();
+        services.AddSingleton(redisConfiguration);
+
+        if (redisConfiguration.Enabled)
+        {
+            services.AddStackExchangeRedisCache(options => options.Configuration = redisConfiguration.ConnectionString);
+            services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+        }
+        
+        
 
         var info = new OpenApiInfo
         {
