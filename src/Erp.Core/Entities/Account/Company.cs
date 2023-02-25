@@ -10,6 +10,14 @@ public class Company : IEntity, IAuditableEntity
     {
         CompanyId = Guid.NewGuid().ToString();
         InsertedDateTime = DateTime.Now;
+
+        CompanyJoinCode = new CompanyJoinCode
+        {
+            CompanyId = CompanyId,
+            IsActive = true,
+            InsertedDateTime = DateTime.Now,
+            InsertedByUserId = InsertedByUserId,
+        };
     }
 
     [Key]
@@ -34,4 +42,5 @@ public class Company : IEntity, IAuditableEntity
     public User InsertedByUser { get; set; }
     [ForeignKey("ModifiedByUserId")]
     public User? ModifiedByUser { get; set; }
+    public CompanyJoinCode CompanyJoinCode { get; set; }
 }

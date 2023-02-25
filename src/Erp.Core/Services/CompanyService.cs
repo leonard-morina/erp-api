@@ -30,7 +30,7 @@ public class CompanyService : ICompanyService
     public async Task<bool> AddCompanyAsync(string companyName, string companyAddress1, string companyAddress2,
         string companyEmail, string companyPhone, string companyWebsite,
         string companyLogo, string companyOwnerFirstName, string companyOwnerLastName,
-        string country, string city, string ownerId, bool addOwnerAsPartOfCompany, 
+        string country, string city, string ownerId, bool addOwnerAsPartOfCompany,
         CancellationToken cancellationToken = default)
     {
         var company = new Company

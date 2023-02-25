@@ -9,7 +9,6 @@ public class ErpContext : IdentityDbContext<User, Role, string>
 {
     public ErpContext(DbContextOptions<ErpContext> options) : base(options)
     {
-        
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
@@ -24,21 +23,14 @@ public class ErpContext : IdentityDbContext<User, Role, string>
     private void ConfigureModelBuilders(ModelBuilder builder)
     {
         builder.ConvertIdentityToPostgresSQLNamingConventions();
-        builder.Entity<Company>(entity =>
-        {
-            entity.ToTable("company");
-        });
-        builder.Entity<UserCompany>(entity =>
-        {
-            entity.ToTable("user_company");
-        });
-        builder.Entity<CompanyJoinRequest>(entity =>
-        {
-            entity.ToTable("company_join_request");
-        });
+        builder.Entity<Company>(entity => { entity.ToTable("company"); });
+        builder.Entity<CompanyJoinCode>(entity => { entity.ToTable("company_join_code"); });
+        builder.Entity<CompanyJoinRequest>(entity => { entity.ToTable("company_join_request"); });
+        builder.Entity<UserCompany>(entity => { entity.ToTable("user_company"); });
     }
 
     public DbSet<Company> Companies { get; set; }
-    public DbSet<UserCompany> UserCompanies { get; set; }
+    public DbSet<CompanyJoinCode> CompanyJoinCodes { get; set; }
     public DbSet<CompanyJoinRequest> CompanyJoinRequests { get; set; }
+    public DbSet<UserCompany> UserCompanies { get; set; }
 }

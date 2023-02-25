@@ -14,4 +14,9 @@ public static class ApiRoutes
         public const string REGISTER = "register";
         public const string USERNAME_EMAIL_VALID = "username-or-email/valid";
     }
+
+    public static class Settings
+    {
+        public const string LOCALES = "locales";
+    }
 }
