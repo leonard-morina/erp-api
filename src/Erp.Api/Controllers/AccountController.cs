@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Erp.Api.Authentication;
+using Erp.Api.Constants;
 using Erp.Api.Models;
 using Erp.Api.ViewModel;
 using Erp.Core.Entities.Account;
@@ -28,7 +29,7 @@ public class AccountController : BaseController
         _tokenGenerator = tokenGenerator;
     }
 
-    [HttpPost("login")]
+    [HttpPost(ApiRoutes.Account.LOGIN)]
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] SignIn login, CancellationToken cancellationToken = default)
     {
@@ -60,7 +61,7 @@ public class AccountController : BaseController
         return Ok(new SucceededAuthentication(user) { Token = token});
     }
 
-    [HttpPost("username-or-email/valid")]
+    [HttpPost(ApiRoutes.Account.USERNAME_EMAIL_VALID)]
     public async Task<IActionResult> IsUsernameValid([FromBody] ValidUsernameOrEmail validUsernameOrEmail,
         CancellationToken cancellationToken = default)
     {
@@ -89,7 +90,7 @@ public class AccountController : BaseController
         return Ok(validatedUsernameOrEmail);
     }
 
-    [HttpPost("register")]
+    [HttpPost(ApiRoutes.Account.REGISTER)]
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterUser registerUser)
     {
