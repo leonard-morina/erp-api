@@ -35,7 +35,7 @@ public static class ApiServicesConfiguration
         if (redisConfiguration.Enabled)
         {
             services.AddStackExchangeRedisCache(options => options.Configuration = redisConfiguration.ConnectionString);
-            services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+            services.AddSingleton<IResponseCacheService, RedisResponseCacheService>();
         }
         
         

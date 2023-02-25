@@ -1,14 +1,15 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
 
 namespace Erp.Api.Cache;
 
-public class ResponseCacheService : IResponseCacheService
+public class RedisResponseCacheService : IResponseCacheService
 {
     private readonly IDistributedCache _distributedCache;
 
-    public ResponseCacheService(IDistributedCache distributedCache)
+    public RedisResponseCacheService(IDistributedCache distributedCache)
     {
         _distributedCache = distributedCache;
     }
@@ -16,7 +17,8 @@ public class ResponseCacheService : IResponseCacheService
     public async Task CacheResponseAsync(string cacheKey, object response, TimeSpan timeToLive)
     {
         if (response == null) return;
-        var serializedResponse = JsonSerializer.Serialize(response);
+        var defaults = JsonSerializerDefaults.Web;
+        var serializedResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions(defaults));
         await _distributedCache.SetStringAsync(cacheKey, serializedResponse, new DistributedCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = timeToLive
