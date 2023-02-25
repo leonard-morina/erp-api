@@ -3,6 +3,7 @@ using System;
 using Erp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Erp.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ErpContext))]
-    partial class ErpContextModelSnapshot : ModelSnapshot
+    [Migration("20230225025410_AddingCompanyJoinCodeTable")]
+    partial class AddingCompanyJoinCodeTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
