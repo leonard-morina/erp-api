@@ -17,6 +17,5 @@ public static class ApiRoutes
 
     public static class Settings
     {
-        public const string LOCALES = "locales";
     }
 }

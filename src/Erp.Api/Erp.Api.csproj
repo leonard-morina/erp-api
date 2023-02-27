@@ -28,7 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Erp.Data\Erp.Data.csproj" />
       <ProjectReference Include="..\Erp.Infrastructure\Erp.Infrastructure.csproj" />
     </ItemGroup>
 
