@@ -28,8 +28,13 @@ public class BaseController : ControllerBase
         var user = await _signInManager.UserManager.FindByEmailAsync(email);
         return user;
     }
-    
-    
+
+    [NonAction]
+    public BadRequestObjectResult BadRequestWithErrorCode(string errorCode)
+    {
+        return BadRequest(new {errorCode});
+    }
+
     [NonAction]
     public string GetClaimValueFromContext(string claimType)
     {
