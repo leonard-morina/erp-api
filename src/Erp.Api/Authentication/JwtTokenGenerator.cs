@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Erp.Api.Configuration;
+using Erp.Api.Constants;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Erp.Api.Authentication;
@@ -25,7 +26,8 @@ public class JwtTokenGenerator : ITokenGenerator
         var key = Encoding.ASCII.GetBytes(_tokenConfig.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[] {new Claim("id", userId), new Claim("role", role)}),
+            Subject = new ClaimsIdentity(new[]
+                {new Claim(ClaimTypeConstants.USER_ID, userId), new Claim(ClaimTypeConstants.ROLE_ID, role)}),
             Expires = DateTime.Now.AddDays((double) _tokenConfig.ExpirationInDays),
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

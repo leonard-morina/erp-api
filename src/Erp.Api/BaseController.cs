@@ -18,10 +18,10 @@ public class BaseController : ControllerBase
 
     public string AuthenticatedUserEmail => (string)HttpContext.Items["User"];
     
-    public string AuthenticatedUserId => GetClaimValueFromContext(ClaimTypeConstants.USER_ID);
+    protected string AuthenticatedUserId => GetClaimValueFromContext(ClaimTypeConstants.USER_ID);
     
     [NonAction]
-    public async Task<User> GetAuthenticatedUserAsync()
+    protected async Task<User> GetAuthenticatedUserAsync()
     {
         var email = (string)HttpContext.Items["User"];
         if (string.IsNullOrEmpty(email)) return null;
@@ -30,13 +30,13 @@ public class BaseController : ControllerBase
     }
 
     [NonAction]
-    public BadRequestObjectResult BadRequestWithErrorCode(string errorCode)
+    protected BadRequestObjectResult BadRequestWithErrorCode(string errorCode)
     {
         return BadRequest(new {errorCode});
     }
 
     [NonAction]
-    public string GetClaimValueFromContext(string claimType)
+    protected  string GetClaimValueFromContext(string claimType)
     {
         var claims = (IEnumerable<Claim>)HttpContext.Items["Claims"];
         if (claims == null) return null;
