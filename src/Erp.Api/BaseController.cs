@@ -38,7 +38,7 @@ public class BaseController : ControllerBase
     [NonAction]
     protected  string GetClaimValueFromContext(string claimType)
     {
-        var claims = (IEnumerable<Claim>)HttpContext.Items["Claims"];
+        var claims = (IEnumerable<Claim>) HttpContext.Items["Claims"];
         if (claims == null) return null;
         var claimValue = claims.Where(s => s.Type == claimType).FirstOrDefault().Value;
         return claimValue;

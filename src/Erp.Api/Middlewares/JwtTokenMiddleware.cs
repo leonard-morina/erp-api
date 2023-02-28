@@ -43,6 +43,7 @@ public class JwtTokenMiddleware
 
             var jwtToken = (JwtSecurityToken) validatedToken;
             var user = jwtToken.Claims.First(x => x.Type == ClaimTypeConstants.USER_ID).Value;
+            context.Items["Claims"] = jwtToken.Claims;
             // attach user to context on successful jwt validation
             context.Items["User"] = user;
         }

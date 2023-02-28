@@ -60,7 +60,7 @@ public class AccountController : BaseController
         if (!loginResult.Succeeded) return Unauthorized(loginResult);
         user ??= await _userManager.FindByNameAsync(username);
         var roles = await _userManager.GetRolesAsync(user);
-        var token = _tokenGenerator.GenerateToken(user.Email, roles[0]);
+        var token = _tokenGenerator.GenerateToken(user.Id, user.Email, roles[0]);
         return Ok(new SucceededAuthentication(user) {Token = token});
     }
 
@@ -133,7 +133,7 @@ public class AccountController : BaseController
         }
 
         var roles = await _userManager.GetRolesAsync(user);
-        var token = _tokenGenerator.GenerateToken(user.Email, roles[0]);
+        var token = _tokenGenerator.GenerateToken(user.Id, user.Email, roles[0]);
         return Ok(new SucceededAuthentication(user) {Token = token});
     }
 }
