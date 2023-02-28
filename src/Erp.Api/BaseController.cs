@@ -16,16 +16,15 @@ public class BaseController : ControllerBase
     }
     
 
-    public string AuthenticatedUserEmail => (string)HttpContext.Items["User"];
+    public string AuthenticatedUserEmail => GetClaimValueFromContext(ClaimTypeConstants.EMAIL);
     
     protected string AuthenticatedUserId => GetClaimValueFromContext(ClaimTypeConstants.USER_ID);
     
     [NonAction]
     protected async Task<User> GetAuthenticatedUserAsync()
     {
-        var email = (string)HttpContext.Items["User"];
-        if (string.IsNullOrEmpty(email)) return null;
-        var user = await _signInManager.UserManager.FindByEmailAsync(email);
+        if (string.IsNullOrEmpty(AuthenticatedUserId)) return null;
+        var user = await _signInManager.UserManager.FindByIdAsync(AuthenticatedUserId);
         return user;
     }
 
@@ -36,7 +35,7 @@ public class BaseController : ControllerBase
     }
 
     [NonAction]
-    protected  string GetClaimValueFromContext(string claimType)
+    protected string GetClaimValueFromContext(string claimType)
     {
         var claims = (IEnumerable<Claim>) HttpContext.Items["Claims"];
         if (claims == null) return null;
