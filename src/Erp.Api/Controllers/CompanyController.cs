@@ -6,6 +6,7 @@ using Erp.Api.Files;
 using Erp.Api.Models;
 using Erp.Api.ViewModel;
 using Erp.Core.Entities.Account;
+using Erp.Core.Error;
 using Erp.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -62,13 +63,14 @@ public class CompanyController : BaseController
         {
             try
             {
-                logoFileName = await _fileUploader.UploadFileAsync(companyRegister.Logo, _foldersConfiguration.CompanyLogo,
+                logoFileName = await _fileUploader.UploadFileAsync(companyRegister.Logo,
+                    _foldersConfiguration.CompanyLogo,
                     cancellationToken);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }    
+            }
         }
 
         var registeredCompany = await _companyService.AddCompanyAsync(companyRegister.Name,
@@ -80,5 +82,30 @@ public class CompanyController : BaseController
 
         if (!registeredCompany) return BadRequest("Failed to register company");
         return Ok();
+    }
+
+    [HttpPost(ApiRoutes.Company.REQUEST_JOIN)]
+    [JwtAuthorize]
+    public async Task<IActionResult> RequestToJoinCompany([FromBody] RequestToJoinCompany requestToJoinCompany,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(AuthenticatedUserId)) return StatusCode(401);
+        try
+        {
+            var companyId = await _companyService.GetCompanyIdByCodeAsync(requestToJoinCompany.Code, cancellationToken);
+            var requested =
+                await _companyService.RequestToJoinCompanyAsync(AuthenticatedUserId, companyId, false,
+                    cancellationToken);
+            if (requested)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+        catch (ExceptionWithErrorCode ex)
+        {
+            return BadRequestWithErrorCode(ex.Message);
+        }
     }
 }

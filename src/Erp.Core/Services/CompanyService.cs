@@ -1,4 +1,5 @@
 using Erp.Core.Entities.Account;
+using Erp.Core.Exceptions;
 using Erp.Core.Interfaces;
 using Erp.Core.Specifications;
 
@@ -10,14 +11,17 @@ public class CompanyService : ICompanyService
     private readonly IAsyncRepository<UserCompany> _userCompanyRepository;
     private readonly IAsyncRepository<Company> _companyRepository;
     private readonly IAsyncRepository<CompanyJoinRequest> _companyJoinRequestRepository;
+    private readonly IAsyncRepository<CompanyJoinCode> _companyJoinCodeRepository;
 
     public CompanyService(IAsyncRepository<UserCompany> userCompanyRepository,
         IAsyncRepository<Company> companyRepository,
-        IAsyncRepository<CompanyJoinRequest> companyJoinRequestRepository)
+        IAsyncRepository<CompanyJoinRequest> companyJoinRequestRepository,
+        IAsyncRepository<CompanyJoinCode> companyJoinCodeRepository)
     {
         _userCompanyRepository = userCompanyRepository;
         _companyRepository = companyRepository;
         _companyJoinRequestRepository = companyJoinRequestRepository;
+        _companyJoinCodeRepository = companyJoinCodeRepository;
     }
 
     public async Task<IReadOnlyList<UserCompany>> GetUserCompaniesByUserIdAsync(string userId,
@@ -67,6 +71,15 @@ public class CompanyService : ICompanyService
         };
 
         return await _userCompanyRepository.AddAsync(userCompany, cancellationToken);
+    }
+
+    public async Task<string> GetCompanyIdByCodeAsync(string code, CancellationToken cancellationToken = default)
+    {
+        var companyJoinCodeSpecification = new ReadonlyActiveCompanyJoinCodeByCodeSpecification(code);
+        var companyJoinCode =
+            await _companyJoinCodeRepository.FirstOrDefaultAsync(companyJoinCodeSpecification, cancellationToken);
+        if (companyJoinCode == null) throw new InvalidCompanyJoinCodeException();
+        return companyJoinCode.CompanyId;
     }
 
     public async Task<bool> RequestToJoinCompanyAsync(string userId, string companyId,

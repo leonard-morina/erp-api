@@ -17,4 +17,6 @@ public interface ICompanyService
         CancellationToken cancellationToken = default);
     Task<bool> ApproveCompanyJoinRequest(string companyId, string userId, string userIdToJoin,
         CancellationToken cancellationToken = default);
+
+    Task<string> GetCompanyIdByCodeAsync(string code, CancellationToken cancellationToken = default);
 }
