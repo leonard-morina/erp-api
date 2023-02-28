@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Erp.Api.Configuration;
+using Erp.Api.Constants;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -41,7 +42,7 @@ public class JwtTokenMiddleware
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken) validatedToken;
-            var user = jwtToken.Claims.First(x => x.Type == "id").Value;
+            var user = jwtToken.Claims.First(x => x.Type == ClaimTypeConstants.USER_ID).Value;
             // attach user to context on successful jwt validation
             context.Items["User"] = user;
         }
