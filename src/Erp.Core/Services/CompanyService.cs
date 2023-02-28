@@ -80,7 +80,7 @@ public class CompanyService : ICompanyService
         var companyJoinCode =
             await _companyJoinCodeRepository.FirstOrDefaultAsync(companyJoinCodeSpecification, cancellationToken);
         if (companyJoinCode == null) return null;
-        return companyJoinCode.CompanyId;
+        return companyJoinCode.JoinCode;
     }
 
     public async Task<string> GetCompanyIdByCodeAsync(string code, CancellationToken cancellationToken = default)
