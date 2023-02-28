@@ -13,6 +13,7 @@ public class Company : IEntity, IAuditableEntity
 
         CompanyJoinCode = new CompanyJoinCode
         {
+            CompanyJoinCodeId = Guid.NewGuid().ToString(),
             CompanyId = CompanyId,
             IsActive = true,
             InsertedDateTime = DateTime.Now,
