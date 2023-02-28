@@ -37,7 +37,7 @@ public class CompanyService : ICompanyService
         string country, string city, string ownerId, bool addOwnerAsPartOfCompany,
         CancellationToken cancellationToken = default)
     {
-        var company = new Company
+        var company = new Company(ownerId)
         {
             Name = companyName,
             AddressLine1 = companyAddress1,
@@ -45,7 +45,6 @@ public class CompanyService : ICompanyService
             Email = companyEmail,
             Logo = companyLogo,
             Phone = companyPhone,
-            InsertedByUserId = ownerId,
             OwnerFirstName = companyOwnerFirstName,
             OwnerLastName = companyOwnerLastName,
             Website = companyWebsite,

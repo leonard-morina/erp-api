@@ -6,7 +6,7 @@ namespace Erp.Core.Entities.Account;
 
 public class Company : IEntity, IAuditableEntity
 {
-    public Company()
+    public Company(string ownerId)
     {
         CompanyId = Guid.NewGuid().ToString();
         InsertedDateTime = DateTime.Now;
@@ -17,9 +17,10 @@ public class Company : IEntity, IAuditableEntity
             CompanyId = CompanyId,
             IsActive = true,
             InsertedDateTime = DateTime.Now,
-            InsertedByUserId = InsertedByUserId,
+            InsertedByUserId = ownerId,
         };
     }
+    
 
     [Key]
     public string CompanyId { get; set; }
@@ -37,7 +38,7 @@ public class Company : IEntity, IAuditableEntity
     public string City { get; set; }
     public DateTime InsertedDateTime { get; set; }
     public DateTime? ModifiedDateTime { get; set; }
-    public string InsertedByUserId { get; set; }
+    public string? InsertedByUserId { get; set; }
     public string? ModifiedByUserId { get; set; }
     [ForeignKey("InsertedByUserId")]
     public User InsertedByUser { get; set; }
