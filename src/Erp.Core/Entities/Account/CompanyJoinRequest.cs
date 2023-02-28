@@ -40,7 +40,7 @@ public class CompanyJoinRequest : IEntity, IAuditableEntity
     [ForeignKey("ModifiedByUserId")]
     public User? ModifiedByUser { get; set; }
     [ForeignKey("RequestApprovedByUserId")]
-    public User RequestApprovedByUser { get; set; }
+    public User? RequestApprovedByUser { get; set; }
     [ForeignKey("RequestCancelledByUserId")]
-    public User RequestCancelledByUser { get; set; }
+    public User? RequestCancelledByUser { get; set; }
 }

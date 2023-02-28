@@ -107,8 +107,10 @@ public class CompanyService : ICompanyService
             new ReadonlyCompanyJoinRequestByUserIdAndCompanyIdSpecification(userId, companyId);
         var companyJoinRequest =
             await _companyJoinRequestRepository.FirstOrDefaultAsync(companyJoinRequestSpecification, cancellationToken);
-        //TODO: Add exception
-        if (companyJoinRequest != null) return false;
+        if (companyJoinRequest != null)
+        {
+            throw new UserExistsInCompanyException();
+        };
 
         return await _companyJoinRequestRepository.AddAsync(new CompanyJoinRequest
         {
