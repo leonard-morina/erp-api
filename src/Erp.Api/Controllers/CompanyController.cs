@@ -108,4 +108,14 @@ public class CompanyController : BaseController
             return BadRequestWithErrorCode(ex.Message);
         }
     }
+
+    [HttpGet(ApiRoutes.Company.CODE_BY_COMPANY_ID)]
+    [JwtAuthorize]
+    [CompanyAuthorize]
+    public async Task<IActionResult> GetCompanyCode(CancellationToken cancellationToken = default)
+    {
+        var companyCode =
+            await _companyService.GetActiveCompanyCodeByCompanyIdAsync(CompanyIdByHeaders, cancellationToken);
+        return Ok(companyCode);
+    }
 }

@@ -19,7 +19,15 @@ public class BaseController : ControllerBase
     public string AuthenticatedUserEmail => GetClaimValueFromContext(ClaimTypeConstants.EMAIL);
     
     protected string AuthenticatedUserId => GetClaimValueFromContext(ClaimTypeConstants.USER_ID);
-    
+    protected string CompanyIdByHeaders => GetValueFromHeaders(HeaderConstants.COMPANY_ID);
+
+    private string GetValueFromHeaders(string type)
+    {
+        HttpContext.Request.Headers.TryGetValue(type, out var value);
+        return value;
+    }
+
+
     [NonAction]
     protected async Task<User> GetAuthenticatedUserAsync()
     {

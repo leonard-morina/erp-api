@@ -73,6 +73,16 @@ public class CompanyService : ICompanyService
         return await _userCompanyRepository.AddAsync(userCompany, cancellationToken);
     }
 
+    public async Task<string> GetActiveCompanyCodeByCompanyIdAsync(string companyId,
+        CancellationToken cancellationToken = default)
+    {
+        var companyJoinCodeSpecification = new ReadonlyActiveCompanyJoinCodeByCompanyIdSpecification(companyId);
+        var companyJoinCode =
+            await _companyJoinCodeRepository.FirstOrDefaultAsync(companyJoinCodeSpecification, cancellationToken);
+        if (companyJoinCode == null) return null;
+        return companyJoinCode.CompanyId;
+    }
+
     public async Task<string> GetCompanyIdByCodeAsync(string code, CancellationToken cancellationToken = default)
     {
         var companyJoinCodeSpecification = new ReadonlyActiveCompanyJoinCodeByCodeSpecification(code);
@@ -80,6 +90,13 @@ public class CompanyService : ICompanyService
             await _companyJoinCodeRepository.FirstOrDefaultAsync(companyJoinCodeSpecification, cancellationToken);
         if (companyJoinCode == null) throw new InvalidCompanyJoinCodeException();
         return companyJoinCode.CompanyId;
+    }
+
+    public async Task<bool> UserIsInCompanyIdAsync(string userId, string companyId,
+        CancellationToken cancellationToken = default)
+    {
+        var userCompanySpecification = new ReadonlyUserCompanyByUserIdAndCompanyIdSpecification(userId, companyId);
+        return await _userCompanyRepository.FirstOrDefaultAsync(userCompanySpecification, cancellationToken) != null;
     }
 
     public async Task<bool> RequestToJoinCompanyAsync(string userId, string companyId,
