@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Erp.Api.Authentication;
 using Erp.Api.Constants;
 using Erp.Api.Extensions;
@@ -6,7 +7,7 @@ using Erp.Api.Models;
 using Erp.Api.ViewModel;
 using Erp.Core.Entities.Account;
 using Erp.Core.Error;
-using Erp.Core.Exceptions;
+using Erp.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -60,7 +61,9 @@ public class AccountController : BaseController
         if (!loginResult.Succeeded) return Unauthorized(loginResult);
         user ??= await _userManager.FindByNameAsync(username);
         var roles = await _userManager.GetRolesAsync(user);
-        var token = _tokenGenerator.GenerateToken(user.Id, user.Email, roles[0]);
+        var claims = await _userManager.GetClaimsAsync(user);
+        var token = _tokenGenerator.GenerateToken(new TokenGeneratorOptions(user.Id, user.Email, roles[0],
+            claims as List<Claim>));
         return Ok(new SucceededAuthentication(user) {Token = token});
     }
 
@@ -117,7 +120,7 @@ public class AccountController : BaseController
             EmailConfirmed = true,
             IsActive = true
         };
-        
+
         var result = await _userManager.CreateAsync(user, registerUser.Password);
         if (!result.Succeeded) return NotFound(result.Errors);
 
@@ -133,7 +136,7 @@ public class AccountController : BaseController
         }
 
         var roles = await _userManager.GetRolesAsync(user);
-        var token = _tokenGenerator.GenerateToken(user.Id, user.Email, roles[0]);
+        var token = _tokenGenerator.GenerateToken(new TokenGeneratorOptions(user.Id, user.Email, roles[0]));
         return Ok(new SucceededAuthentication(user) {Token = token});
     }
 }

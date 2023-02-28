@@ -7,6 +7,6 @@ public class ClaimTypeConstants
     public const string EMAIL = "email";
     public const string USER_ROLE = "UserRole";
     public const string INVOICER_ID = "InvoicerId";
-    public const string ROLE_ID = "roleId";
+    public const string ROLE = "role";
     public const string COMPANY_ID = "companyId";
 }

@@ -20,7 +20,7 @@ public class JwtTokenGenerator : ITokenGenerator
         _tokenConfig = tokenConfig;
     }
 
-    public JwtToken GenerateToken(string userId, string email, string role)
+    public JwtToken GenerateToken(TokenGeneratorOptions options)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_tokenConfig.Secret);
@@ -28,14 +28,19 @@ public class JwtTokenGenerator : ITokenGenerator
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypeConstants.USER_ID, userId),
-                new Claim(ClaimTypeConstants.ROLE_ID, role),
-                new Claim(ClaimTypeConstants.EMAIL, email)
+                new Claim(ClaimTypeConstants.USER_ID, options.UserId),
+                new Claim(ClaimTypeConstants.ROLE, options.Role),
+                new Claim(ClaimTypeConstants.EMAIL, options.Email)
             }),
             Expires = DateTime.Now.AddDays((double) _tokenConfig.ExpirationInDays),
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
+
+        if (options.Claims.Any())
+        {
+            tokenDescriptor.Subject.AddClaims(options.Claims);
+        }
 
         var createdToken = tokenHandler.CreateToken(tokenDescriptor);
         var token = tokenHandler.WriteToken(createdToken);
