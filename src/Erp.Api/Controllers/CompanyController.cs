@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Erp.Api.Authentication;
 using Erp.Api.Cache;
 using Erp.Api.Configuration;
@@ -17,18 +18,20 @@ namespace Erp.Api.Controllers;
 [Route("api/[controller]")]
 public class CompanyController : BaseController
 {
+    private readonly UserManager<User> _userManager;
     private readonly ICompanyService _companyService;
     private readonly IFileUploader _fileUploader;
     private readonly FoldersConfiguration _foldersConfiguration;
 
-    public CompanyController(SignInManager<User> signInManager, ICompanyService companyService,
+    public CompanyController(SignInManager<User> signInManager, UserManager<User> userManager,
+        ICompanyService companyService,
         IFileUploader fileUploader, FoldersConfiguration foldersConfiguration) : base(signInManager)
     {
+        _userManager = userManager;
         _companyService = companyService;
         _fileUploader = fileUploader;
         _foldersConfiguration = foldersConfiguration;
     }
-
 
     [HttpGet(ApiRoutes.Company.MY_LIST)]
     [JwtAuthorize]
@@ -73,14 +76,16 @@ public class CompanyController : BaseController
             }
         }
 
-        var registeredCompany = await _companyService.AddCompanyAsync(companyRegister.Name,
+        var registeredCompanyId = await _companyService.AddCompanyAsync(companyRegister.Name,
             companyRegister.AddressLine1, companyRegister.AddressLine2,
             companyRegister.Email, companyRegister.PhoneNumber, companyRegister.Website, logoFileName,
             companyRegister.OwnerFirstName, companyRegister.OwnerLastName,
             companyRegister.Country, companyRegister.City,
             user.Id, true, cancellationToken);
 
-        if (!registeredCompany) return BadRequest("Failed to register company");
+        if (string.IsNullOrEmpty(registeredCompanyId)) return BadRequest("Failed to register company");
+
+        await _userManager.AddClaimAsync(user, new Claim(ClaimTypeConstants.COMPANY_ID, registeredCompanyId));
         return Ok();
     }
 

@@ -6,7 +6,7 @@ public interface ICompanyService
 {
     Task<IReadOnlyList<UserCompany>> GetUserCompaniesByUserIdAsync(string userId,
         CancellationToken cancellationToken = default);
-    Task<bool> AddCompanyAsync(string companyName, string companyAddress1, string companyAddress2, 
+    Task<string> AddCompanyAsync(string companyName, string companyAddress1, string companyAddress2, 
         string companyEmail, string companyPhone, string companyWebsite,
         string companyLogo, string companyOwnerFirstName, string companyOwnerLastName,
         string country, string city, 

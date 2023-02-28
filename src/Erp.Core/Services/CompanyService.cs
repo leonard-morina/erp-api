@@ -31,7 +31,7 @@ public class CompanyService : ICompanyService
         return await _userCompanyRepository.ListAsync(userCompaniesSpecification, cancellationToken);
     }
 
-    public async Task<bool> AddCompanyAsync(string companyName, string companyAddress1, string companyAddress2,
+    public async Task<string> AddCompanyAsync(string companyName, string companyAddress1, string companyAddress2,
         string companyEmail, string companyPhone, string companyWebsite,
         string companyLogo, string companyOwnerFirstName, string companyOwnerLastName,
         string country, string city, string ownerId, bool addOwnerAsPartOfCompany,
@@ -54,8 +54,9 @@ public class CompanyService : ICompanyService
         };
 
         var addedCompany = await _companyRepository.AddAsync(company, cancellationToken);
-        if (!addedCompany || !addOwnerAsPartOfCompany) return true;
-        return await AddUserToCompanyAsync(ownerId, company.CompanyId, ownerId, cancellationToken);
+        if (!addedCompany || !addOwnerAsPartOfCompany) return company.CompanyId;
+        var registered = await AddUserToCompanyAsync(ownerId, company.CompanyId, ownerId, cancellationToken);
+        return registered ? company.CompanyId : null;
     }
 
     private async Task<bool> AddUserToCompanyAsync(string userId, string companyId,
