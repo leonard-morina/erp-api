@@ -6,6 +6,11 @@ namespace Erp.Core.Entities.Account;
 
 public class Company : IEntity, IAuditableEntity
 {
+    public Company()
+    {
+        CompanyId = Guid.NewGuid().ToString();
+        InsertedDateTime = DateTime.Now;
+    }
     public Company(string ownerId)
     {
         CompanyId = Guid.NewGuid().ToString();
