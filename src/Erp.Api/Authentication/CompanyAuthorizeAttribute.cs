@@ -21,7 +21,7 @@ public class CompanyAuthorize : Attribute, IAsyncActionFilter
         }
 
         var claims = (IEnumerable<Claim>) context.HttpContext.Items["Claims"];
-        if (claims == null || claims.Any())
+        if (claims == null || !claims.Any())
         {
             context.Result = new JsonResult(new {message = "Claims were not found"})
                 {StatusCode = StatusCodes.Status401Unauthorized};
@@ -32,27 +32,28 @@ public class CompanyAuthorize : Attribute, IAsyncActionFilter
             claims.FirstOrDefault(e => e.Type == ClaimTypeConstants.COMPANY_ID && e.Value == companyId)?.Value != null;
         if (companyInClaims != null)
         {
+            var userId = claims.FirstOrDefault(e => e.Type == ClaimTypeConstants.USER_ID)?.Value;
+            if (userId == null)
+            {
+                context.Result = new JsonResult(new {message = "User Id was not found in claims"})
+                    {StatusCode = StatusCodes.Status401Unauthorized};
+                return;
+            }
+
+            var serviceProvider = context.HttpContext.RequestServices;
+            var companyService = serviceProvider.GetService<ICompanyService>();
+            var userInCompany = await companyService.UserIsInCompanyIdAsync(userId, companyId);
+            if (!userInCompany)
+            {
+                context.Result = new JsonResult(new {message = "User id is not part of the requested company"})
+                    {StatusCode = StatusCodes.Status401Unauthorized};
+                return;
+            }
+
             await next();
             return;
         }
 
-        var userId = claims.FirstOrDefault(e => e.Type == ClaimTypeConstants.USER_ID)?.Value;
-        if (userId == null)
-        {
-            context.Result = new JsonResult(new {message = "User Id was not found in claims"})
-                {StatusCode = StatusCodes.Status401Unauthorized};
-            return;
-        }
-
-        var serviceProvider = context.HttpContext.RequestServices;
-        var companyService = serviceProvider.GetService<ICompanyService>();
-        var userInCompany = await companyService.UserIsInCompanyIdAsync(userId, companyId);
-        if (!userInCompany)
-        {
-            context.Result = new JsonResult(new {message = "User id is not part of the requested company"})
-                {StatusCode = StatusCodes.Status401Unauthorized};
-            return;
-        }
 
         await next();
     }

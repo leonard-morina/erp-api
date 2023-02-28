@@ -7,7 +7,7 @@ public static class ApiRoutes
         public const string MY_LIST = "list/my";
         public const string CREATE = "create";
         public const string REQUEST_JOIN = "request/join";
-        public const string CODE_BY_COMPANY_ID = "code";
+        public const string JOIN_CODE_BY_COMPANY_ID = "join/code";
     }
 
     public static class Account

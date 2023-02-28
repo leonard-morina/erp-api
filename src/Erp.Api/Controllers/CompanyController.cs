@@ -114,13 +114,14 @@ public class CompanyController : BaseController
         }
     }
 
-    [HttpGet(ApiRoutes.Company.CODE_BY_COMPANY_ID)]
+    [HttpGet(ApiRoutes.Company.JOIN_CODE_BY_COMPANY_ID)]
     [JwtAuthorize]
     [CompanyAuthorize]
     public async Task<IActionResult> GetCompanyCode(CancellationToken cancellationToken = default)
     {
         var companyCode =
             await _companyService.GetActiveCompanyCodeByCompanyIdAsync(CompanyIdByHeaders, cancellationToken);
+        if (string.IsNullOrEmpty(companyCode)) return NotFound("Company code was not found");
         return Ok(companyCode);
     }
 }
