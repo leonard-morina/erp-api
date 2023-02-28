@@ -24,7 +24,7 @@ public class CompanyJoinCode : IEntity, IAuditableEntity
     [ForeignKey("CompanyId")]
     public Company Company { get; set; }
     [ForeignKey("InsertedByUserId")]
-    public User InsertedByUser { get; set; }
+    public User? InsertedByUser { get; set; }
     [ForeignKey("ModifiedByUserId")]
-    public User ModifiedByUser { get; set; }
+    public User? ModifiedByUser { get; set; }
 }
