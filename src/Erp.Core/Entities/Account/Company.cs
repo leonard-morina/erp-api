@@ -15,6 +15,7 @@ public class Company : IEntity, IAuditableEntity
     {
         CompanyId = Guid.NewGuid().ToString();
         InsertedDateTime = DateTime.Now;
+        InsertedByUserId = ownerId;
 
         CompanyJoinCode = new CompanyJoinCode
         {
