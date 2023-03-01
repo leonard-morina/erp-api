@@ -55,7 +55,6 @@ public class CompanyController : BaseController
 
     [HttpPost(ApiRoutes.Company.REVIEW_COMPANY_JOIN_REQUEST)]
     [JwtAuthorize]
-    [CompanyAuthorize]
     public async Task<IActionResult> ReviewCompanyJoinRequest(
         [FromBody] ReviewCompanyJoinRequest reviewCompanyJoinRequest, CancellationToken cancellationToken = default)
     {
