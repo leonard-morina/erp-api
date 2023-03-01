@@ -99,6 +99,20 @@ public class CompanyService : ICompanyService
         return await _userCompanyRepository.FirstOrDefaultAsync(userCompanySpecification, cancellationToken) != null;
     }
 
+    public async Task<IReadOnlyList<CompanyJoinRequest>> GetJoinRequestsByCompanyId(string companyId,
+        CancellationToken cancellationToken = default)
+    {
+        var companyJoinRequestSpecification = new ReadonlyCompanyJoinRequestByCompanyIdSpecification(companyId);
+        return await _companyJoinRequestRepository.ListAsync(companyJoinRequestSpecification, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<CompanyJoinRequest>> GetJoinRequestsByUserId(string userId,
+        CancellationToken cancellationToken = default)
+    {
+        var companyJoinRequestSpecification = new ReadonlyCompanyJoinRequestByUserIdSpecification(userId);
+        return await _companyJoinRequestRepository.ListAsync(companyJoinRequestSpecification, cancellationToken);
+    }
+
     public async Task<bool> RequestToJoinCompanyAsync(string userId, string companyId,
         bool requestInitiatedByCompany,
         CancellationToken cancellationToken = default)
