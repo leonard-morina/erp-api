@@ -140,6 +140,7 @@ public class CompanyController : BaseController
                 UserFirstName = companyJoinRequest.User.FirstName,
                 UserLastName = companyJoinRequest.User.LastName,
                 UserEmail = companyJoinRequest.User.Email,
+                CompanyJoinRequestId = companyJoinRequest.CompanyJoinRequestId
             });
         return Ok(detailedCompanyJoinRequests);
     }

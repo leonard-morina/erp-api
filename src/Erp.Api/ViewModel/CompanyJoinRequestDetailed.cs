@@ -15,4 +15,5 @@ public class CompanyJoinRequestDetailed
     public string UserFirstName { get; set; }
     public string UserLastName { get; set; }
     public string UserEmail { get; set; }
+    public string CompanyJoinRequestId { get; set; }
 }
