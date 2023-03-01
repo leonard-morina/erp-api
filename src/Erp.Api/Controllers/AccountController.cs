@@ -100,15 +100,7 @@ public class AccountController : BaseController
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterUser registerUser)
     {
-        try
-        {
-            await _userManager.ValidateIfUsernameOrEmailExistsAsync(registerUser.Email, registerUser.Username);
-        }
-        catch (ExceptionWithErrorCode ex)
-        {
-            return BadRequestWithErrorCode(ex.Message);
-        }
-
+        await _userManager.ValidateIfUsernameOrEmailExistsAsync(registerUser.Email, registerUser.Username);
         var user = new User
         {
             Id = Guid.NewGuid().ToString(),

@@ -10,6 +10,7 @@ public static class ApiRoutes
         public const string JOIN_CODE_BY_COMPANY_ID = "join/code";
         public const string GET_JOIN_REQUESTS_AS_OWNER = "join/requests";
         public const string GET_JOIN_MY_REQUESTS = "join/requests/my";
+        public const string REVIEW_COMPANY_JOIN_REQUEST = "join/request/review";
     }
 
     public static class Account

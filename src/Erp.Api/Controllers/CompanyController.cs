@@ -53,6 +53,20 @@ public class CompanyController : BaseController
         return Ok(companyWithLogoUrl);
     }
 
+    [HttpPost(ApiRoutes.Company.REVIEW_COMPANY_JOIN_REQUEST)]
+    [JwtAuthorize]
+    [CompanyAuthorize]
+    public async Task<IActionResult> ReviewCompanyJoinRequest(
+        [FromBody] ReviewCompanyJoinRequest reviewCompanyJoinRequest, CancellationToken cancellationToken = default)
+    {
+        var reviewedRequest = await _companyService.ReviewCompanyJoinRequestAsync(
+            reviewCompanyJoinRequest.CompanyJoinRequestId, reviewCompanyJoinRequest.Approved, AuthenticatedUserId,
+            cancellationToken);
+
+        if (!reviewedRequest) return BadRequest("Failed to review request");
+        return Ok();
+    }
+
     [HttpPost(ApiRoutes.Company.CREATE)]
     [JwtAuthorize]
     [RemoveCacheKeysOnSuccess(ApiRoutes.Company.MY_LIST)]
@@ -95,23 +109,16 @@ public class CompanyController : BaseController
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(AuthenticatedUserId)) return StatusCode(401);
-        try
+        var companyId = await _companyService.GetCompanyIdByCodeAsync(requestToJoinCompany.Code, cancellationToken);
+        var requested =
+            await _companyService.RequestToJoinCompanyAsync(AuthenticatedUserId, companyId, false,
+                cancellationToken);
+        if (requested)
         {
-            var companyId = await _companyService.GetCompanyIdByCodeAsync(requestToJoinCompany.Code, cancellationToken);
-            var requested =
-                await _companyService.RequestToJoinCompanyAsync(AuthenticatedUserId, companyId, false,
-                    cancellationToken);
-            if (requested)
-            {
-                return Ok();
-            }
+            return Ok();
+        }
 
-            return BadRequest();
-        }
-        catch (ExceptionWithErrorCode ex)
-        {
-            return BadRequestWithErrorCode(ex.Message);
-        }
+        return BadRequest();
     }
 
     [HttpGet(ApiRoutes.Company.GET_JOIN_REQUESTS_AS_OWNER)]

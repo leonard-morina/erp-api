@@ -12,12 +12,21 @@ public class CompanyJoinRequest : IEntity, IAuditableEntity
         InsertedDateTime = DateTime.Now;
     }
 
-    public void ApproveRequest(string approvedById)
+    public void ReviewRequest(bool approved, string modifiedByUserId)
     {
-        RequestApproved = true;
-        RequestApprovedDateTime = DateTime.Now;
+        if (approved)
+        {
+            RequestApproved = true;
+            RequestApprovedDateTime = DateTime.Now;
+        }
+        else
+        {
+            RequestCancelled = true;
+            RequestApprovedDateTime = DateTime.Now;
+        }
+
         ModifiedDateTime = DateTime.Now;
-        ModifiedByUserId = approvedById;
+        ModifiedByUserId = modifiedByUserId;
     }
 
     [Key]
@@ -47,4 +56,6 @@ public class CompanyJoinRequest : IEntity, IAuditableEntity
     public User? RequestApprovedByUser { get; set; }
     [ForeignKey("RequestCancelledByUserId")]
     public User? RequestCancelledByUser { get; set; }
+
+    [NotMapped] public bool StatusChanged => RequestApproved || RequestCancelled;
 }

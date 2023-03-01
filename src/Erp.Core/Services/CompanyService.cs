@@ -121,6 +121,27 @@ public class CompanyService : ICompanyService
         return await _companyJoinRequestRepository.ListAsync(companyJoinRequestSpecification, cancellationToken);
     }
 
+    public async Task<bool> ReviewCompanyJoinRequestAsync(string companyJoinRequestId, bool approved, string userId,
+        CancellationToken cancellationToken = default)
+    {
+        var companyJoinRequestSpecification =
+            new CompanyJoinRequestByCompanyJoinRequestIdSpecification(companyJoinRequestId);
+        var companyJoinRequest =
+            await _companyJoinRequestRepository.FirstOrDefaultAsync(companyJoinRequestSpecification, cancellationToken);
+        if (companyJoinRequest == null) return false;
+        if (companyJoinRequest.StatusChanged) throw new ReviewHasAlreadyBeenDoneForCompanyJoinRequestException();
+        companyJoinRequest.ReviewRequest(approved, userId);
+        var updatedCompanyJoinRequest =
+            await _companyJoinRequestRepository.UpdateAsync(companyJoinRequest, cancellationToken);
+        if (updatedCompanyJoinRequest && approved)
+        {
+            return await AddUserToCompanyAsync(companyJoinRequest.UserId, companyJoinRequest.CompanyId, userId,
+                cancellationToken);
+        }
+
+        return true;
+    }
+
     public async Task<bool> RequestToJoinCompanyAsync(string userId, string companyId,
         bool requestInitiatedByCompany,
         CancellationToken cancellationToken = default)
@@ -144,23 +165,4 @@ public class CompanyService : ICompanyService
         }, cancellationToken);
     }
 
-    public async Task<bool> ApproveCompanyJoinRequest(string companyId, string userId, string userIdToJoin,
-        CancellationToken cancellationToken = default)
-    {
-        var companyJoinRequestSpecification =
-            new ActiveCompanyJoinRequestByUserIdAndCompanyIdSpecification(userIdToJoin, companyId);
-        var companyJoinRequest =
-            await _companyJoinRequestRepository.FirstOrDefaultAsync(companyJoinRequestSpecification, cancellationToken);
-        //TODO: Add exception
-        if (companyJoinRequest == null) return false;
-        companyJoinRequest.ApproveRequest(userId);
-        var updatedCompanyJoinRequest =
-            await _companyJoinRequestRepository.UpdateAsync(companyJoinRequest, cancellationToken);
-        if (updatedCompanyJoinRequest)
-        {
-            return await AddUserToCompanyAsync(userIdToJoin, companyId, userId, cancellationToken);
-        }
-
-        return false;
-    }
 }

@@ -3,6 +3,7 @@ using Erp.Api.Constants;
 using Erp.Api.Middlewares;
 using Erp.Api.Utils;
 using Erp.Core.Entities.Account;
+using Erp.Core.Error;
 using Erp.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -89,6 +90,7 @@ app.UseCors(options =>
 });
 
 app.UseMiddleware<JwtTokenMiddleware>();
+app.UseMiddleware<ExceptionWithErrorCodeHandlerMiddleware>();
 app.MapControllers();
 
 app.Run();
