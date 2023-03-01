@@ -114,7 +114,7 @@ public class CompanyController : BaseController
         }
     }
 
-    [HttpGet(ApiRoutes.Company.GET_REQUESTS)]
+    [HttpGet(ApiRoutes.Company.GET_JOIN_REQUESTS)]
     [JwtAuthorize]
     [CompanyAuthorize]
     public async Task<IActionResult> GetRequestsByCompany(CancellationToken cancellationToken = default)
