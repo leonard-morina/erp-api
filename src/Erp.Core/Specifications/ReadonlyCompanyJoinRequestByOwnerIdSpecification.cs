@@ -9,6 +9,7 @@ public class ReadonlyCompanyJoinRequestByOwnerIdSpecification : Specification<Co
     {
         Query.Include(s => s.Company)
             .ThenInclude(s => s.UserCompanies)
-            .Where(e => e.Company.UserCompanies.Any(e => e.UserId == ownerId && e.IsOwner));
+            .Where(e => e.Company.UserCompanies.Any(e => e.UserId == ownerId && e.IsOwner))
+            .Include(s => s.User);
     }
 }
