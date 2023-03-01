@@ -26,4 +26,7 @@ public interface ICompanyService
         CancellationToken cancellationToken = default);
     Task<IReadOnlyList<CompanyJoinRequest>> GetJoinRequestsByUserId(string userId,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<CompanyJoinRequest>> GetJoinRequestsByOwnerId(string ownerId,
+        CancellationToken cancellationToken = default);
 }

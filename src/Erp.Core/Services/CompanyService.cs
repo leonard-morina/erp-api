@@ -82,6 +82,7 @@ public class CompanyService : ICompanyService
         if (companyJoinCode == null) return null;
         return companyJoinCode.JoinCode;
     }
+    
 
     public async Task<string> GetCompanyIdByCodeAsync(string code, CancellationToken cancellationToken = default)
     {
@@ -106,6 +107,13 @@ public class CompanyService : ICompanyService
         return await _companyJoinRequestRepository.ListAsync(companyJoinRequestSpecification, cancellationToken);
     }
 
+    public async Task<IReadOnlyList<CompanyJoinRequest>> GetJoinRequestsByOwnerId(string ownerId,
+        CancellationToken cancellationToken = default)
+    {
+        var companyJoinRequestSpecification = new ReadonlyCompanyJoinRequestByOwnerIdSpecification(ownerId);
+        return await _companyJoinRequestRepository.ListAsync(companyJoinRequestSpecification, cancellationToken);
+    }
+    
     public async Task<IReadOnlyList<CompanyJoinRequest>> GetJoinRequestsByUserId(string userId,
         CancellationToken cancellationToken = default)
     {

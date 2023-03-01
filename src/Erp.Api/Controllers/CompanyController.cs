@@ -114,13 +114,12 @@ public class CompanyController : BaseController
         }
     }
 
-    [HttpGet(ApiRoutes.Company.GET_JOIN_REQUESTS)]
+    [HttpGet(ApiRoutes.Company.GET_JOIN_REQUESTS_AS_OWNER)]
     [JwtAuthorize]
-    [CompanyAuthorize]
     public async Task<IActionResult> GetRequestsByCompany(CancellationToken cancellationToken = default)
     {
         var companyJoinRequests =
-            await _companyService.GetJoinRequestsByCompanyId(CompanyIdByHeaders, cancellationToken);
+            await _companyService.GetJoinRequestsByOwnerId(AuthenticatedUserId, cancellationToken);
         var detailedCompanyJoinRequests = companyJoinRequests.Select(companyJoinRequest =>
             new CompanyJoinRequestDetailed
             {

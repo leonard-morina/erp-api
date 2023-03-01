@@ -51,4 +51,5 @@ public class Company : IEntity, IAuditableEntity
     [ForeignKey("ModifiedByUserId")]
     public User? ModifiedByUser { get; set; }
     public CompanyJoinCode CompanyJoinCode { get; set; }
+    public List<UserCompany> UserCompanies { get; set; }
 }
