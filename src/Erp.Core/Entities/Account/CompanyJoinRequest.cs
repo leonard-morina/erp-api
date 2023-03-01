@@ -35,6 +35,10 @@ public class CompanyJoinRequest : IEntity, IAuditableEntity
     public DateTime? ModifiedDateTime { get; set; }
     public string? InsertedByUserId { get; set; }
     public string? ModifiedByUserId { get; set; }
+    [ForeignKey("CompanyId")]
+    public Company Company { get; set; }
+    [ForeignKey("UserId")]
+    public User User { get; set; }
     [ForeignKey("InsertedByUserId")]
     public User InsertedByUser { get; set; }
     [ForeignKey("ModifiedByUserId")]

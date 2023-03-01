@@ -121,7 +121,21 @@ public class CompanyController : BaseController
     {
         var companyJoinRequests =
             await _companyService.GetJoinRequestsByCompanyId(CompanyIdByHeaders, cancellationToken);
-        return Ok(companyJoinRequests);
+        var detailedCompanyJoinRequests = companyJoinRequests.Select(companyJoinRequest =>
+            new CompanyJoinRequestDetailed
+            {
+                CompanyName = companyJoinRequest.Company.Name,
+                CompanyOwnerFirstName = companyJoinRequest.Company.OwnerFirstName,
+                CompanyOwnerLastName = companyJoinRequest.Company.OwnerLastName,
+                UserId = companyJoinRequest.UserId,
+                CompanyId = companyJoinRequest.CompanyId,
+                CompanyLogoUrl =
+                    _fileUploader.GetFileUrl(companyJoinRequest.Company.Logo, _foldersConfiguration.CompanyLogo),
+                UserFirstName = companyJoinRequest.User.FirstName,
+                UserLastName = companyJoinRequest.User.LastName,
+                UserEmail = companyJoinRequest.User.Email,
+            });
+        return Ok(detailedCompanyJoinRequests);
     }
 
     [HttpGet(ApiRoutes.Company.JOIN_CODE_BY_COMPANY_ID)]

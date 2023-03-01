@@ -8,6 +8,8 @@ public class ReadonlyCompanyJoinRequestByUserIdSpecification : Specification<Com
     public ReadonlyCompanyJoinRequestByUserIdSpecification(string userId)
     {
         Query.Where(e => e.UserId == userId)
+            .Include(s => s.Company)
+            .Include(s => s.User)
             .AsNoTracking();
     }
 }
