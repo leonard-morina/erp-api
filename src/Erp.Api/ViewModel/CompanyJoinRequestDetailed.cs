@@ -4,9 +4,9 @@ public class CompanyJoinRequestDetailed
 {
     public string UserId { get; set; }
     public bool? RequestApproved { get; set; }
-    public bool? RequestCancelled { get; set; }
+    public bool? RequestDeclined { get; set; }
     public DateTime? ApprovedRequestDateTime { get; set; }
-    public DateTime? CancelledRequestDateTime { get; set; }
+    public DateTime? DeclinedRequestDateTime { get; set; }
     public string CompanyId { get; set; }
     public string CompanyLogoUrl { get; set; }
     public string CompanyName { get; set; }

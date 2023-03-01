@@ -21,8 +21,8 @@ public class CompanyJoinRequest : IEntity, IAuditableEntity
         }
         else
         {
-            RequestCancelled = true;
-            RequestApprovedDateTime = DateTime.Now;
+            RequestDeclined = true;
+            RequestDeclinedDateTime = DateTime.Now;
         }
 
         ModifiedDateTime = DateTime.Now;
@@ -34,11 +34,11 @@ public class CompanyJoinRequest : IEntity, IAuditableEntity
     public string CompanyId { get; set; }
     public string UserId { get; set; }
     public bool RequestApproved { get; set; }
-    public bool RequestCancelled { get; set; }
+    public bool RequestDeclined { get; set; }
     public DateTime? RequestApprovedDateTime { get; set; }
-    public DateTime? RequestCancelledDateTime { get; set; }
+    public DateTime? RequestDeclinedDateTime { get; set; }
     public string? RequestApprovedByUserId { get; set; }
-    public string? RequestCancelledByUserId { get; set; }
+    public string? RequestDeclinedByUserId { get; set; }
     public bool RequestInitiatedByCompany { get; set; }
     public DateTime InsertedDateTime { get; set; }
     public DateTime? ModifiedDateTime { get; set; }
@@ -54,8 +54,8 @@ public class CompanyJoinRequest : IEntity, IAuditableEntity
     public User? ModifiedByUser { get; set; }
     [ForeignKey("RequestApprovedByUserId")]
     public User? RequestApprovedByUser { get; set; }
-    [ForeignKey("RequestCancelledByUserId")]
-    public User? RequestCancelledByUser { get; set; }
+    [ForeignKey("RequestDeclinedByUserId")]
+    public User? RequestDeclinedByUser { get; set; }
 
-    [NotMapped] public bool StatusChanged => RequestApproved || RequestCancelled;
+    [NotMapped] public bool StatusChanged => RequestApproved || RequestDeclined;
 }

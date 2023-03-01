@@ -7,7 +7,7 @@ public class ActiveCompanyJoinRequestByUserIdAndCompanyIdSpecification: Specific
 {
     public ActiveCompanyJoinRequestByUserIdAndCompanyIdSpecification(string userId, string companyId)
     {
-        Query.Where(e => e.UserId == userId && e.CompanyId == companyId && (!e.RequestApproved && !e.RequestCancelled))
+        Query.Where(e => e.UserId == userId && e.CompanyId == companyId && (!e.RequestApproved && !e.RequestDeclined))
             .AsNoTracking();
     }
 }

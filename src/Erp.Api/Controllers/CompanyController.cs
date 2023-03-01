@@ -53,8 +53,10 @@ public class CompanyController : BaseController
         return Ok(companyWithLogoUrl);
     }
 
+    //TODO: need to validate if the one approving the request has access to approve 
     [HttpPost(ApiRoutes.Company.REVIEW_COMPANY_JOIN_REQUEST)]
     [JwtAuthorize]
+    [RemoveCacheKeysOnSuccess(ApiRoutes.Company.MY_LIST)]
     public async Task<IActionResult> ReviewCompanyJoinRequest(
         [FromBody] ReviewCompanyJoinRequest reviewCompanyJoinRequest, CancellationToken cancellationToken = default)
     {
@@ -139,7 +141,11 @@ public class CompanyController : BaseController
                 UserFirstName = companyJoinRequest.User.FirstName,
                 UserLastName = companyJoinRequest.User.LastName,
                 UserEmail = companyJoinRequest.User.Email,
-                CompanyJoinRequestId = companyJoinRequest.CompanyJoinRequestId
+                CompanyJoinRequestId = companyJoinRequest.CompanyJoinRequestId,
+                RequestDeclined = companyJoinRequest.RequestDeclined,
+                RequestApproved = companyJoinRequest.RequestApproved,
+                DeclinedRequestDateTime = companyJoinRequest.RequestDeclinedDateTime,
+                ApprovedRequestDateTime = companyJoinRequest.RequestApprovedDateTime
             });
         return Ok(detailedCompanyJoinRequests);
     }

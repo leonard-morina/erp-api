@@ -54,18 +54,17 @@ public class CompanyService : ICompanyService
 
         var addedCompany = await _companyRepository.AddAsync(company, cancellationToken);
         if (!addedCompany || !addOwnerAsPartOfCompany) return company.CompanyId;
-        var registered = await AddUserToCompanyAsync(ownerId, company.CompanyId, ownerId, cancellationToken);
+        var registered = await AddUserToCompanyAsync(ownerId, company.CompanyId, ownerId, true, cancellationToken);
         return registered ? company.CompanyId : null;
     }
 
     private async Task<bool> AddUserToCompanyAsync(string userId, string companyId,
-        string insertedByUserId,
-        CancellationToken cancellationToken = default)
+        string insertedByUserId, bool isOwner, CancellationToken cancellationToken = default)
     {
         var userCompany = new UserCompany
         {
             CompanyId = companyId,
-            IsOwner = true,
+            IsOwner = isOwner,
             UserId = userId,
             InsertedByUserId = insertedByUserId,
         };
@@ -136,7 +135,7 @@ public class CompanyService : ICompanyService
         if (updatedCompanyJoinRequest && approved)
         {
             return await AddUserToCompanyAsync(companyJoinRequest.UserId, companyJoinRequest.CompanyId, userId,
-                cancellationToken);
+                false, cancellationToken);
         }
 
         return true;
